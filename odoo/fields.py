@@ -34,6 +34,7 @@ from .tools import (
     image_process, merge_sequences, SQL_ORDER_BY_TYPE, is_list_of, has_list_types,
     html_normalize, html_sanitize,
 )
+from .tools.misc import unquote
 from .tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from .tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 from .tools.translate import html_translate, _
@@ -2838,23 +2839,27 @@ class _Relational(Field):
     _description_context = property(attrgetter('context'))
 
     def _description_domain(self, env):
-        if self.check_company and not self.domain:
+        company_domain = None
+        if self.check_company:
             if self.company_dependent:
                 if self.comodel_name == "res.users":
                     # user needs access to current company (self.env.company)
-                    return "[('company_ids', 'in', allowed_company_ids[0])]"
+                    company_domain = "[('company_ids', 'in', allowed_company_ids[0])]"
                 else:
-                    return "[('company_id', 'in', [allowed_company_ids[0], False])]"
+                    company_domain = "[('company_id', 'in', [allowed_company_ids[0], False])]"
             else:
                 # when using check_company=True on a field on 'res.company', the
                 # company_id comes from the id of the current record
                 cid = "id" if self.model_name == "res.company" else "company_id"
                 if self.comodel_name == "res.users":
                     # User allowed company ids = user.company_ids
-                    return f"['|', (not {cid}, '=', True), ('company_ids', 'in', [{cid}])]"
+                    company_domain = f"['|', (not {cid}, '=', True), ('company_ids', 'in', [{cid}])]"
                 else:
-                    return f"[('company_id', 'in', [{cid}, False])]"
-        return self.domain(env[self.model_name]) if callable(self.domain) else self.domain
+                    company_domain = env[self.comodel_name].check_company_domain(companies=unquote(f"{cid} or current_company_id"))
+        domain = self.domain(env[self.model_name]) if callable(self.domain) else self.domain  # pylint: disable=not-callable
+        if company_domain:
+            return f"{company_domain} + ({domain})"
+        return domain
 
 
 class Many2one(_Relational):

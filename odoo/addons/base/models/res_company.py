@@ -359,7 +359,7 @@ class Company(models.Model):
 
     @ormcache('tuple(self.env.companies.ids)', 'self.id')
     def __accessible_branches(self):
-        # Get a branch of this company that the current user can use
+        # Get branches of this company that the current user can use
         self.ensure_one()
         children = self.search([('id', 'child_of', self.id)])
         accessible = self.env.companies
