@@ -147,14 +147,14 @@ const attributeHelper = (attributes = { radio: {}, select: {}, color: {} }) => {
     if (attributes.radio.value) {
         attributesSteps.push({
             content: `Select radio ${attributes.radio.name} with value ${attributes.radio.value}`,
-            trigger: `.o_self_order_main_options div:contains('${attributes.radio.name}') ~ div input[value='${attributes.radio.value}']`,
+            trigger: `.o_self_order_main_options div:contains('${attributes.radio.name}') ~ div input[name='${attributes.radio.value}']`,
         });
     }
 
     if (attributes.select.value) {
         attributesSteps.push({
-            content: `Select ${attributes.select.name} with value ${attributes.select.value}`,
-            trigger: `.o_self_order_main_options div:contains('${attributes.select.name}') ~ select:has(option[value='${attributes.select.value}'])`,
+            content: `Select radio ${attributes.select.name} with value ${attributes.select.value}`,
+            trigger: `.o_self_order_main_options div:contains('${attributes.select.name}') ~ select:has(option[name='${attributes.select.value}'])`,
             run: `text ${attributes.select.value}`,
         });
     }

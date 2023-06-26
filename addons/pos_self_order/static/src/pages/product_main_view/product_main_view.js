@@ -28,7 +28,9 @@ export class ProductMainView extends Component {
         this.state = useState({
             qty: 1,
             customer_note: "",
-            selectedVariants: [],
+            /** this will be an object that will have the attribute id as key and the value id as value
+             *  ex: selectedVariants: {4: "9", 5: "11"} */
+            selectedVariants: {},
             cartQty: 0,
         });
 
@@ -51,7 +53,7 @@ export class ProductMainView extends Component {
             }
         } else {
             this.state.selectedVariants = this.product.attributes.reduce((acc, curr) => {
-                acc[curr.name] = curr.values[0].name;
+                acc[curr.id] = curr.values[0].id;
                 return acc;
             }, {});
         }
@@ -60,14 +62,17 @@ export class ProductMainView extends Component {
     }
 
     get fullProductName() {
-        const productAttributeString = Object.values(this.state.selectedVariants).join(", ");
-        let name = `${this.product.name}`;
-
-        if (productAttributeString) {
-            name += ` (${productAttributeString})`;
+        if (!this.product.attributes.length) {
+            return this.product.name;
         }
 
-        return name;
+        const findAttribute = (id) => this.product.attributes.find((attr) => attr.id == id);
+        const findValue = (attr, id) => attr.values.find((value) => value.id == id);
+        const productAttributeString = Object.entries(this.state.selectedVariants)
+            .map(([attrId, valueId]) => findValue(findAttribute(attrId), valueId).name)
+            .join(", ");
+
+        return `${this.product.name} (${productAttributeString})`;
     }
 
     changeQuantity(increase) {
@@ -92,7 +97,7 @@ export class ProductMainView extends Component {
         return increase ? this.state.qty++ : this.state.qty--;
     }
 
-    orderlineCanBeMerged(newLine) {
+    orderlineCanBeMerged() {
         const editedLine = this.selfOrder.editedLine;
 
         if (editedLine) {

@@ -9,9 +9,6 @@ from odoo import models, fields, api
 class PosOrderLine(models.Model):
     _inherit = "pos.order.line"
 
-    # For the moment we need this to keep attributes consistency between the server and client_side.
-    selected_attributes = fields.Json(string="Selected Attributes")
-
     # FIXME: uuid already pass in pos and move note in pos_restaurant.
     def _export_for_ui(self, orderline):
         return {
@@ -19,6 +16,10 @@ class PosOrderLine(models.Model):
             'note': orderline.note,
             **super()._export_for_ui(orderline),
         }
+
+    def _get_selected_attributes(self) -> Dict:
+        self.ensure_one()
+        return {value.attribute_line_id.id: value.id for value in self.attribute_value_ids}
 
 
 class PosOrder(models.Model):
@@ -65,7 +66,7 @@ class PosOrder(models.Model):
                     "price_subtotal": line.price_subtotal,
                     "price_subtotal_incl": line.price_subtotal_incl,
                     "product_id": line.product_id.id,
-                    "selected_attributes": line.selected_attributes,
+                    "selected_attributes": line._get_selected_attributes(),
                     "uuid": line.uuid,
                     "qty": line.qty,
                     "customer_note": line.customer_note,

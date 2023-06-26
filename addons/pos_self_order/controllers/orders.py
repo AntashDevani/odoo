@@ -181,7 +181,7 @@ class PosSelfOrderController(http.Controller):
                 'product_id': line.get('product_id'),
                 'qty': line.get('qty'),
                 'customer_note': line.get('customer_note'),
-                'selected_attributes': line.get('selected_attributes'),
+                'attribute_value_ids': line.get('selected_attributes') and [int(v) for v in line['selected_attributes'].values()] or [],
                 'full_product_name': line.get('full_product_name'),
             })
 

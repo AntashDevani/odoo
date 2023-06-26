@@ -35,10 +35,10 @@
                                         <input
                                             type="radio"
                                             class="form-check-input my-1 me-2"
-                                            t-att-name="attribute.id"
-                                            t-att-value="value.name"
+                                            t-att-name="value.name"
+                                            t-att-value="value.id"
                                             t-attf-id="{{ attribute.id }}_{{ value.id }}"
-                                            t-model="state.selectedVariants[attribute.name]"
+                                            t-model="state.selectedVariants[attribute.id]"
                                             />
                                         <span class="flex-grow-1">
                                             <t t-esc="value.name"/>
@@ -50,8 +50,8 @@
                                 </t>
                             </t>
                             <select t-elif="attribute.display_type === 'select'" class="configurator_select form-select"
-                                t-model="state.selectedVariants[attribute.name]">
-                                <option t-foreach="attribute.values" t-as="value" t-key="value.id" t-att-value="value.name">
+                                t-model="state.selectedVariants[attribute.id]">
+                                <option t-foreach="attribute.values" t-as="value" t-key="value.id" t-att-name="value.name" t-att-value="value.id">
                                     <t t-esc="value.name"/>
                                     <t t-if="value.price_extra.list_price">
                                         + <t t-esc="selfOrder.formatMonetary(value.price_extra.list_price)" />
@@ -67,10 +67,10 @@
                                             <input
                                                 type="radio"
                                                 class="form-check-input my-1 me-2"
-                                                t-att-name="attribute.id"
-                                                t-att-value="value.name"
+                                                t-att-name="attribute.name"
+                                                t-att-value="value.id"
                                                 t-attf-id="{{ attribute.id }}_{{ value.id }}"
-                                                t-model="state.selectedVariants[attribute.name]"
+                                                t-model="state.selectedVariants[attribute.id]"
                                                 />
                                         </label>
                                         <span class="flex-grow-1">
