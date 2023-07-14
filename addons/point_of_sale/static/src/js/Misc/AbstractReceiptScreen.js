@@ -5,7 +5,7 @@ odoo.define('point_of_sale.AbstractReceiptScreen', function (require) {
     const { nextFrame } = require('point_of_sale.utils');
     const PosComponent = require('point_of_sale.PosComponent');
     const Registries = require('point_of_sale.Registries');
-
+asdasdasdasdasdasdasdasdasdas
     /**
      * This relies on the assumption that there is a reference to
      * `order-receipt` so it is important to declare a `t-ref` to
